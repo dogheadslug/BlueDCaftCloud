@@ -9,6 +9,8 @@
 #include "stdafx.h"
 #include "FamilyTongUpdt.h"
 
+#include <string>
+
 #define MAX_LOADSTRING 100
 
 // Global Variables:
@@ -23,7 +25,6 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 HBITMAP bitmap;
-
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
@@ -157,15 +158,40 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
 			
             // TODO: Add any drawing code that uses hdc here...
-			// testcase: drawing a rectangle;
-			//Rectangle(hdc,20,20,390,360);
 
 			//adding bitmap image. Source:
 			//https://social.msdn.microsoft.com/Forums/vstudio/en-US/4817f6a6-e47a-4431-bbbb-e395af339eab/how-to-insert-an-image-in-win32-application?forum=vclanguage
 			HDC hMemDC = CreateCompatibleDC(hdc);
 			::SelectObject(hMemDC, bitmap);
-			BitBlt(hdc, 0, 0, 360, 360, hMemDC, 0, 0, SRCCOPY);
-			TextOut(hdc, 450 , 200, L"this is test text", strlen("this is test text"));//not being displayed
+			BitBlt(hdc, 20, 20, 360, 360, hMemDC, 0, 0, SRCCOPY);
+			//str::string s0("this is test text");
+			char szSize[100];
+			//char msg1[] = L"a newer version of FamilyTong is available";
+
+			/*TextOut(hdc, 450, 170, L"检测到全家桶有新版本!",
+				strlen("检测到全家桶有新版本!"));*/
+
+			
+
+			//select the font in 
+			//CreateFont function
+			//https://msdn.microsoft.com/en-us/library/windows/desktop/dd183499(v=vs.85).aspx
+			HFONT font = CreateFont(18, 0, 0, 0, 200, false, false, false, CHINESEBIG5_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+				DEFAULT_QUALITY, DEFAULT_PITCH, L"Arial");
+			HFONT hFontOld = (HFONT)SelectObject(hdc, font);
+			//textbox RECT
+			RECT textbox1 = {380,50,800,75};
+			RECT textbox2 = {380,75,800,100};
+			RECT textbox3 = {380,100,800,125};
+			
+			DrawText(hdc, L"a newer version of FamilyTong is available ", 
+				strlen("a newer version of FamilyTong is available "), &textbox1, DT_CENTER);
+			DrawText(hdc, L"the client will restart after the installation is complete",
+				strlen("the client will restart after the installation is complete"), &textbox2, DT_CENTER);
+			DrawTextW(hdc, L"检测到更新版本的全家桶，安装完成后重启。",
+				/*strlen("检测到更新版本的全家桶，安装完成后重启。")*/-1, &textbox3, DT_CENTER);
+			//http://c.biancheng.net/cpp/html/2952.html
+
 			::DeleteDC(hMemDC);
 
             EndPaint(hWnd, &ps);
@@ -174,7 +200,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	//adding a bitmap image
 	case WM_CREATE: 
 	{
-		bitmap = (HBITMAP)LoadImage(NULL, L"E:\\2017dh.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+		bitmap = (HBITMAP)LoadImage(NULL, (L"E:\\2017dh.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	}
 	break;
     case WM_DESTROY:
