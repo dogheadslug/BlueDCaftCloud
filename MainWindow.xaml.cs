@@ -6,11 +6,10 @@
  * 4. change the downloaded file's postfix (not needed)
  * 5. open new file and end update process (achieved)
  * 
- * 
+ * This piece of code is based on Chad's template
  * *******************************************/
 
  //things need to figure out:
- //how to check file size
  //multithreading
 
 using System;
@@ -29,6 +28,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
+using System.Net;
+using System.ComponentModel;
 
 namespace BluedcraftCloudUpdate{
     /// <summary>
@@ -39,53 +41,55 @@ namespace BluedcraftCloudUpdate{
         //private static System.Timers.Timer aTimer;
         //private static int SomeInt = 20;
 
-
-        
-
-        public MainWindow(){
+        public MainWindow() {
             InitializeComponent();
-            //check the file version, if do not match, download the file from server
 
-            //UpdateProgress: change the length of progressbar pBar1
-            //UpdateProgress();
-            //the length of progress bar (0 - 100)
-            pBar1.Value = 75;
-
-
-            System.Net.WebClient myWebClient = new System.Net.WebClient();
+            
             //download file:
             //https://msdn.microsoft.com/en-us/library/ez801hhe(v=vs.110).aspx
             //the FOLDER path needed for DownloadFile
-            string DLURI = "https://people.ucsc.edu/~zhon4/";
+            //www.bluedcraft.com/download/bluedcraftcloud/update.dat 
+            string DLURI = "https://www.bluedcraft.com/download/bluedcraftcloud/";
+            //string DLURI = "https://people.ucsc.edu/~zhon4/";
             //the file name of downloaded item for DownloadFile
-            string FileName = "index.html";
+            string FileName = "update.dat";
+            //string FileName = "index.html";
             //the combined FILE path needed for DownloadFile
             string myFileSrc = DLURI + FileName;
 
+            startDownload(myFileSrc, FileName);
+
+            /**************************
+             * this part checks if the file is fully downloaded
+             * ??? not sure if it's really needed
+             * 
+            System.Net.WebClient myWebClient = new System.Net.WebClient();
             myWebClient.OpenRead(myFileSrc);
+
+            //size of download file
             Int64 DL_FileSize = Convert.ToInt64(myWebClient.ResponseHeaders["Content-Length"]);
+
+            //size of local file
             Int64 LC_FileSize = Convert.ToInt64(new System.IO.FileInfo(FileName).Length);
 
+            //while the file size do not match
+            //use the while loop so it checks if the file has been successfully downloaded
+            while (DL_FileSize != LC_FileSize) {
 
-            //if the file size do not match
-            if (DL_FileSize != LC_FileSize)
-            {
-                //FileName = System.IO.Path.ChangeExtension(FileName, ".dat");
-                myWebClient.DownloadFile(myFileSrc, FileName);
-                pBar1.Value = 60;
-
-                
-                //after download is finished, launch the familyTong
-                System.Diagnostics.Process.Start(FileName);
+                startDownload(myFileSrc, FileName);
+                //check if the file has been downloaded completely
+                LC_FileSize = Convert.ToInt64(new System.IO.FileInfo(FileName).Length);
             }
 
-            //if file size match then close the window directly
-            else this.Close();
-            
+            ******************************/
 
+            //after download is finished, launch the familyTong
+            //System.Diagnostics.Process.Start(FileName);
+            
             //close window
-            //this.Close();
+            this.Close();
         }
+
 
         //basic interface functions. title bar at the top
         //drag the window around
@@ -107,19 +111,30 @@ namespace BluedcraftCloudUpdate{
             //i have no idea how i figured it out
         }
 
-        //https://stackoverflow.com/questions/12126889/how-to-use-winforms-progress-bar
-        //how to use progress bar
-        private void UpdateProgress(){
-            //aTimer = new System.Timers.Timer(2000);
-            //pBar1.Value = Someint;
+        //uwp progress bar
+        //https://social.msdn.microsoft.com/Forums/windows/en-US/d07047a7-bd9c-4f9e-b4a0-41f63164b769/c-httpclient-download-file-progress?forum=winforms
+        //System.Net.WebClient m_WebClient;
+        private void startDownload(string URL, string fileName){
+            WebClient m_WebClient = new WebClient();
+            m_WebClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressChanged);
+            m_WebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFileCompleted);
+            Uri uri = new Uri(URL);
+            m_WebClient.DownloadFileAsync(uri, fileName);
 
         }
 
+        private void DownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e) {
+            //Update the progress bar value with the percentage 0-100
+            pBar1.Value =(int)e.ProgressPercentage;
+            //ProgressPercentage is avaliable so do not need to calculate percentage
+        }
+
+        private void DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e) {
+            // System.Diagnostics.Process.Start(FileName);
+        }
+
+        //https://stackoverflow.com/questions/12126889/how-to-use-winforms-progress-bar
+        //how to use progress bar
 
     }
-
-
 }
-
-//https://stackoverflow.com/questions/29904427/how-to-read-dat-file-in-c-sharp
-//rename dat file to gz file, decompress the file then read it
