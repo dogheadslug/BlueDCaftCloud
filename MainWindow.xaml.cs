@@ -4,9 +4,9 @@
  * 2. download new version as dat file from the server (not needed)
  * 3. after download, remove the outdated exe (automaticlly achieved)
  * 4. change the downloaded file's postfix (not needed)
- * 5. open new file and end update process (achieved)
+ * 5. open new file and terminate update process (achieved)
  * 
- * This piece of code is based on Chad's template
+ * This piece of code is based on Chad's template (which includes basic user interface)
  * *******************************************/
 
 //next step: start the downloaded file after update complete
@@ -31,21 +31,17 @@ using System.Threading;
 using System.Net;
 using System.ComponentModel;
 
-namespace BluedcraftCloudUpdate
-{
+namespace BluedcraftCloudUpdate{
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class MainWindow : Window
-    {
-
+    public partial class MainWindow : Window{
+        
         //private static System.Timers.Timer aTimer;
         //private static int SomeInt = 20;
 
-        public MainWindow()
-        {
+        public MainWindow(){
             InitializeComponent();
-
 
             //download file:
             //https://msdn.microsoft.com/en-us/library/ez801hhe(v=vs.110).aspx
@@ -58,6 +54,8 @@ namespace BluedcraftCloudUpdate
             //string FileName = "index.html";
             //the combined FILE path needed for DownloadFile
             string myFileSrc = DLURI + FileName;
+
+            //string Cent = Convert.ToString(pBar1.Value);
 
             startDownload(myFileSrc, FileName);
 
@@ -81,8 +79,7 @@ namespace BluedcraftCloudUpdate
             ******************************/
 
             //after download is finished, launch the familyTong
-            System.Diagnostics.Process.Start(FileName);
-
+            //System.Diagnostics.Process.Start(FileName);
             //close window(not here!)
             //this.Close();
         }
@@ -90,24 +87,20 @@ namespace BluedcraftCloudUpdate
 
         //basic interface functions. title bar at the top
         //drag the window around
-        private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            try
-            {
+        private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e){
+            try{
                 this.DragMove();
             }
             catch { }
         }
 
         //close the window
-        private void Window_close(object sender, RoutedEventArgs e)
-        {
+        private void Window_close(object sender, RoutedEventArgs e){
             this.Close();
         }
 
         //minimize the window
-        private void Window_minimize(object sender, RoutedEventArgs e)
-        {
+        private void Window_minimize(object sender, RoutedEventArgs e){
             this.WindowState = WindowState.Minimized;
             //i have no idea how i figured it out
         }
@@ -115,29 +108,33 @@ namespace BluedcraftCloudUpdate
         //uwp progress bar
         //https://social.msdn.microsoft.com/Forums/windows/en-US/d07047a7-bd9c-4f9e-b4a0-41f63164b769/c-httpclient-download-file-progress?forum=winforms
         //System.Net.WebClient m_WebClient;
-        private void startDownload(string URL, string fileName)
-        {
+        private void startDownload(string URL, string fileName){
             WebClient m_WebClient = new WebClient();
             m_WebClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgressChanged);
             m_WebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(DownloadFileCompleted);
             Uri uri = new Uri(URL);
             m_WebClient.DownloadFileAsync(uri, fileName);
-
         }
 
-        private void DownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e)
-        {
+        private void DownloadProgressChanged(object sender, System.Net.DownloadProgressChangedEventArgs e){
             //Update the progress bar value with the percentage 0-100
             pBar1.Value = (int)e.ProgressPercentage;
+
+            //download percentage display
+            tB1.Text = Convert.ToString(pBar1.Value) + "%";
+
             //ProgressPercentage is avaliable so do not need to calculate percentage
         }
 
-        private void DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
-        {
+        private void DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e){
             // System.Diagnostics.Process.Start(FileName);
 
-            //close the window after download is complete
+            //close the window after download is complete, instantly 
+            //maybe we should just let user to do it mannualy?
             //this.Close();
+
+            //another window comes out : update complete, launch the new version now?
+            tB1.Text = "Finished!";
         }
 
         //https://stackoverflow.com/questions/12126889/how-to-use-winforms-progress-bar
