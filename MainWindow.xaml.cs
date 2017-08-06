@@ -1,4 +1,4 @@
-/**********************************************
+﻿/**********************************************
  * FamilyTong updater 
  * 1. check the version and file size of current familytong (need more instructions)
  * 2. download new version as dat file from the server (not needed)
@@ -36,12 +36,11 @@ namespace BluedcraftCloudUpdate{
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window{
-        
-        //private static System.Timers.Timer aTimer;
-        //private static int SomeInt = 20;
 
         public MainWindow(){
             InitializeComponent();
+
+            okbtn.IsEnabled = false;
 
             //download file:
             //https://msdn.microsoft.com/en-us/library/ez801hhe(v=vs.110).aspx
@@ -105,6 +104,12 @@ namespace BluedcraftCloudUpdate{
             //i have no idea how i figured it out
         }
 
+        private void Launch_new_version(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("update.dat");
+            this.Close();
+        }
+
         //uwp progress bar
         //https://social.msdn.microsoft.com/Forums/windows/en-US/d07047a7-bd9c-4f9e-b4a0-41f63164b769/c-httpclient-download-file-progress?forum=winforms
         //System.Net.WebClient m_WebClient;
@@ -129,12 +134,11 @@ namespace BluedcraftCloudUpdate{
         private void DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e){
             // System.Diagnostics.Process.Start(FileName);
 
-            //close the window after download is complete, instantly 
-            //maybe we should just let user to do it mannualy?
-            //this.Close();
-
             //another window comes out : update complete, launch the new version now?
             tB1.Text = "Finished!";
+
+            //enable the OK btn
+            okbtn.IsEnabled = true;
         }
 
         //https://stackoverflow.com/questions/12126889/how-to-use-winforms-progress-bar
