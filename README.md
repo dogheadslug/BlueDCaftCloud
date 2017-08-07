@@ -14,6 +14,6 @@ So I did some research again.
 
 End of story.
 
-FamilyTong, also called bluedcaftCloud, is a personal account management tool for players of this minecraft server.
+BlueDCaftCloud, also called familyTong, is a personal account management tool for players of this minecraft server.
 
 
