@@ -16,4 +16,6 @@ End of story.
 
 BlueDCaftCloud, also called familyTong, is a personal account management tool for players of this minecraft server.
 
+170809
 
+Chad, the project owner said he wants to pass a parameter from main process into this updating process in order to fetch different version of update from the server. We haven't figured out how to do that yet, and he said there will be four versions of update to be chosen from.
