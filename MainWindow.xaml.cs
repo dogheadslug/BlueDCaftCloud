@@ -1,4 +1,13 @@
-﻿/**********************************************
+/**********************************************
+* 这是我第一次接触C#和xaml，钻研了一个礼拜完成了这个更新下载器。
+* 请阅读README.md获取更多相关信息。
+* It's the very first time I code in C# and xaml.
+* I spend about one week on this project, and did
+* quite a lot of research.
+* please read README.md for more info
+**********************************************/
+
+/**********************************************
  * FamilyTong updater 
  * 1. check the version and file size of current familytong (need more instructions)
  * 2. download new version as dat file from the server (not needed)
